@@ -24,8 +24,8 @@ El sistema gestiona recetas de lavado configurables, escalamiento de sensores an
 ### 2. Escalamiento Analógico y Calentamiento
 ![Escalamiento y Calentamiento](media/02_calentamiento_escalamiento.png)
 
-### 3. Ciclo de Lavado y Centrifugado
-![Fin de ciclo](media/03_fin_de_ciclo.png)
+### 3. Fin de ciclo
+![Fin de ciclo](media/03_fin_del_ciclo.png)
 
 ### 4. Protección Térmica y Paro de Seguridad (Estado 99)
 ![Protección Falla Motor](media/04_proteccion_falla_motor.png)
