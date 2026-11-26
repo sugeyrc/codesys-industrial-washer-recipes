@@ -1,0 +1,489 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP22 Patch 4" creationDateTime="2026-11-26T12:49:37.032655" />
+  <contentHeader name="Industrial_Washer_Recipes.project" modificationDateTime="2026-11-24T12:46:16.4461566">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1" />
+      </fbd>
+      <ld>
+        <scaling x="1" y="1" />
+      </ld>
+      <sfc>
+        <scaling x="1" y="1" />
+      </sfc>
+    </coordinateInfo>
+    <addData>
+      <data name="http://www.3s-software.com/plcopenxml/projectinformation" handleUnknown="implementation">
+        <ProjectInformation />
+      </data>
+    </addData>
+  </contentHeader>
+  <types>
+    <dataTypes />
+    <pous />
+  </types>
+  <instances>
+    <configurations />
+  </instances>
+  <addData>
+    <data name="http://www.3s-software.com/plcopenxml/application" handleUnknown="implementation">
+      <resource name="Application">
+        <task name="MainTask" interval="PT0.02S" priority="1">
+          <pouInstance name="PLC_PRG" typeName="">
+            <documentation>
+              <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+            </documentation>
+          </pouInstance>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+              <TaskSettings KindOfTask="Cyclic" Interval="t#20ms" IntervalUnit="ms" WithinSPSTimeSlicing="true">
+                <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+              </TaskSettings>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+              <ObjectId>c5f2d7fb-238a-42c8-aeba-d31789898cae</ObjectId>
+            </data>
+          </addData>
+        </task>
+        <task name="VISU_TASK" interval="PT0.1S" priority="31">
+          <pouInstance name="VisuElems.Visu_Prg" typeName="">
+            <documentation>
+              <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+            </documentation>
+          </pouInstance>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+              <TaskSettings KindOfTask="Cyclic" Interval="100" IntervalUnit="ms" WithinSPSTimeSlicing="true">
+                <Watchdog Enabled="false" TimeUnit="ms" />
+              </TaskSettings>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+              <ObjectId>395d42de-28ed-4f21-a294-7fdcbe14fc2f</ObjectId>
+            </data>
+          </addData>
+        </task>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/datatype" handleUnknown="implementation">
+            <dataType name="ST_CicloLavado">
+              <baseType>
+                <struct>
+                  <variable name="Nombre">
+                    <type>
+                      <string length="25" />
+                    </type>
+                  </variable>
+                  <variable name="Temp_Objetivo">
+                    <type>
+                      <REAL />
+                    </type>
+                  </variable>
+                  <variable name="Tiempo_Lavado">
+                    <type>
+                      <TIME />
+                    </type>
+                  </variable>
+                  <variable name="Tiempo_Enjuague">
+                    <type>
+                      <TIME />
+                    </type>
+                  </variable>
+                </struct>
+              </baseType>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                  <ObjectId>57270342-5a06-4a75-9878-91be4361cb3f</ObjectId>
+                </data>
+              </addData>
+            </dataType>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+            <pou name="PLC_PRG" pouType="program">
+              <interface>
+                <localVars>
+                  <variable name="Btn_Prog_1">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Botones he indicadores (HMI)</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="Btn_Prog_2">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                  <variable name="Btn_Iniciar">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                  <variable name="Paro_Emergencia">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                  <variable name="Falla_Tambor">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                  <variable name="Sensor_Temperatura_Crudo">
+                    <type>
+                      <INT />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">DESLIZADOR</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="Recetas">
+                    <type>
+                      <array>
+                        <dimension lower="1" upper="2" />
+                        <baseType>
+                          <derived name="ST_CicloLavado" />
+                        </baseType>
+                      </array>
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Recetas</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="Receta_Activa">
+                    <type>
+                      <derived name="ST_CicloLavado" />
+                    </type>
+                  </variable>
+                  <variable name="Tambor">
+                    <type>
+                      <derived name="FB_Tambor" />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Control</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="Reloj_Proceso">
+                    <type>
+                      <derived name="TON" />
+                    </type>
+                  </variable>
+                  <variable name="Estado">
+                    <type>
+                      <INT />
+                    </type>
+                    <initialValue>
+                      <simpleValue value="0" />
+                    </initialValue>
+                  </variable>
+                  <variable name="Valvula_Agua">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">Lecturas</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="Valvula_Desague">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                  <variable name="Calentador">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                  <variable name="Ciclo_Terminado">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                  <variable name="Luz_Emergencia">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                  <variable name="Temp_Actual">
+                    <type>
+                      <REAL />
+                    </type>
+                  </variable>
+                </localVars>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Temp_Actual := Escalar(
+	Entrada_Cruda := Sensor_Temperatura_Crudo,
+	Crudo_Min := 0,
+	Crudo_Max := 27648,
+	Escala_Min := 0.0,
+	Escala_Max := 100.0
+);
+
+IF Paro_Emergencia OR Tambor.Alarma_Motor THEN
+	Estado := 99;
+END_IF;
+
+CASE Estado OF
+	0: //Reposo
+	  Valvula_Agua := FALSE;
+	  Calentador := FALSE;
+	  Valvula_Desague := FALSE;
+	  Tambor.Girar := FALSE;
+	  Ciclo_Terminado := FALSE;
+	  Luz_Emergencia := FALSE;
+	  Reloj_Proceso(IN := FALSE);
+	 
+	 IF Btn_Prog_1 THEN
+		 Receta_Activa.Nombre := 'Ropa Delicada';
+		 Receta_Activa.Temp_Objetivo := 30.0;
+		 Receta_Activa.Tiempo_Lavado := T#4S;
+		 Receta_Activa.Tiempo_Enjuague := T#3S;
+     ELSIF Btn_Prog_2 THEN
+		 Receta_Activa.Nombre := 'Ropa Pesada';
+		 Receta_Activa.Temp_Objetivo := 60.0;
+		 Receta_Activa.Tiempo_Lavado := T#6S;
+		 Receta_Activa.Tiempo_Enjuague := T#4S;
+	 END_IF;
+	 
+	 IF Btn_Iniciar AND (Receta_Activa.Temp_Objetivo &gt; 0.0) THEN
+	       Estado := 10;
+	 END_IF;
+	  
+	10:  //Llenado
+	   Valvula_Agua := TRUE;
+	   Reloj_Proceso(IN := TRUE, PT := T#3S);
+	   IF Reloj_Proceso.Q THEN
+		   Reloj_Proceso(IN := FALSE);
+           Valvula_Agua := FALSE;
+           Estado := 20;
+	   END_IF;
+	   
+	20:  //Calentamiento
+	   Valvula_Agua := FALSE;
+	   Calentador := TRUE;
+	   IF Temp_Actual &gt;= Receta_Activa.Temp_Objetivo THEN
+		   Calentador := FALSE;
+		   Estado := 30;
+	   END_IF;
+	   
+	30:  //Lavado
+	   Tambor.Girar := TRUE;
+	   Reloj_Proceso(IN := TRUE, PT := Receta_Activa.Tiempo_Lavado);
+	   IF  Reloj_Proceso.Q THEN
+		   Reloj_Proceso(IN := FALSE);
+		   Tambor.Girar := FALSE;
+		   Estado := 40;
+	   END_IF;
+	40:  //Drenaje
+	   Valvula_Desague := TRUE;
+	   Reloj_Proceso(IN := TRUE, PT := T#2S);
+	   IF Reloj_Proceso.Q THEN
+		   Reloj_Proceso(IN := FALSE);
+		   Valvula_Desague := FALSE;
+		   Estado := 50;
+	   END_IF;
+	50:  // Enjuage
+	   Valvula_Agua := TRUE;
+	   Tambor.Girar := TRUE;
+	   Reloj_Proceso(IN := TRUE, PT := Receta_Activa.Tiempo_Enjuague);
+	   IF Reloj_Proceso.Q THEN
+		   Valvula_Agua := FALSE;
+	       Tambor.Girar := FALSE;
+		   Reloj_Proceso(IN := FALSE);
+		   Estado := 60;
+	   END_IF;
+	60:  //Terminado
+	   Ciclo_Terminado := TRUE;
+	   IF Btn_Iniciar THEN
+		   Ciclo_Terminado := FALSE;
+		   Estado := 0;
+	   END_IF;
+	99: // ESTADO 99: PARO DE EMERGENCIA ENCLAVADO
+		Luz_Emergencia := TRUE;
+        Valvula_Agua := FALSE;
+		Calentador := FALSE;
+		Valvula_Desague := FALSE;
+		Ciclo_Terminado := FALSE;
+		Tambor.Girar := FALSE;
+		// Solo sale de emergencia cuando sueltas el paro y presionas Inicio
+		IF Btn_Iniciar AND NOT Paro_Emergencia AND NOT Tambor.Alarma_Motor THEN
+			Luz_Emergencia := FALSE;
+			Estado := 0;                // Regresa a reposo (y apaga la luz)
+		END_IF;
+	
+END_CASE;
+
+Tambor(Falla_Motor := Falla_Tambor);
+
+
+	</xhtml>
+                </ST>
+              </body>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                  <ObjectId>4f8c4166-b5d4-49df-b173-585c17dd53ec</ObjectId>
+                </data>
+              </addData>
+            </pou>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+            <pou name="Escalar" pouType="function">
+              <interface>
+                <returnType>
+                  <REAL />
+                </returnType>
+                <inputVars>
+                  <variable name="Entrada_Cruda">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                  <variable name="Crudo_Min">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                  <variable name="Crudo_Max">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                  <variable name="Escala_Min">
+                    <type>
+                      <REAL />
+                    </type>
+                  </variable>
+                  <variable name="Escala_Max">
+                    <type>
+                      <REAL />
+                    </type>
+                  </variable>
+                </inputVars>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF Crudo_Max = Crudo_Min THEN
+	Escalar := 0.0;
+ELSE
+	Escalar := (INT_TO_REAL(Entrada_Cruda - Crudo_Min)/INT_TO_REAL(Crudo_Max - Crudo_Min))*(Escala_Max - Escala_Min) + Escala_Min;
+END_IF</xhtml>
+                </ST>
+              </body>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                  <ObjectId>45bd2cc3-1abf-476c-90ca-51f6225b8af7</ObjectId>
+                </data>
+              </addData>
+            </pou>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+            <pou name="FB_Tambor" pouType="functionBlock">
+              <interface>
+                <inputVars>
+                  <variable name="Girar">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                  <variable name="Falla_Motor">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                </inputVars>
+                <outputVars>
+                  <variable name="Motor_Activo">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                  <variable name="Alarma_Motor">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                </outputVars>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF Falla_Motor THEN
+	Motor_Activo := FALSE;
+	Alarma_Motor := TRUE;
+ELSIF Girar AND NOT Falla_Motor THEN
+	Motor_Activo := TRUE;
+	Alarma_Motor := FALSE;
+ELSE 
+	Motor_Activo := FALSE;
+	Alarma_Motor := FALSE;
+END_IF</xhtml>
+                </ST>
+              </body>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                  <ObjectId>8f71512c-c1c8-4828-b8e2-d69cd7368f5e</ObjectId>
+                </data>
+              </addData>
+            </pou>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/libraries" handleUnknown="implementation">
+            <Libraries>
+              <Library Name="#IoStandard" Namespace="IoStandard" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="true" DefaultResolution="IoStandard, 3.5.22.0 (System)" />
+              <Library Name="#3SLicense" Namespace="_3S_LICENSE" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="3SLicense, 0.0.0.0 (CODESYS)" ResolverGuid="97c3b452-d9fa-4ac2-9d0c-3d420aa6d95b" />
+              <Library Name="#CAA Device Diagnosis" Namespace="DED" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="CAA Device Diagnosis, 3.5.22.0 (CAA Technical Workgroup)" />
+              <Library Name="#Standard" Namespace="Standard" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" DefaultResolution="Standard, * (System)" />
+              <Library Name="#BreakpointLogging" Namespace="BPLog" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="Breakpoint Logging Functions, * (3S - Smart Software Solutions GmbH)" />
+              <Library Name="#System_VisuElems" Namespace="VisuElems" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElems, 4.10.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuElemMeter" Namespace="VisuElemMeter" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemMeter, 4.10.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuElemsSpecialControls" Namespace="VisuElemsSpecialControls" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemsSpecialControls, 4.7.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuElemsWinControls" Namespace="VisuElemsWinControls" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemsWinControls, 4.10.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuElemTextEditor" Namespace="VisuElemTextEditor" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemTextEditor, 4.8.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuElemTrace" Namespace="VisuElemTrace" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemTrace, 4.10.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuNativeControl" Namespace="VisuNativeControl" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuNativeControl, 4.9.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuElemsAlarm" Namespace="VisuElemsAlarm" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemsAlarm, 4.10.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuElemCamDisplayer" Namespace="VisuElemCamDisplayer" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemCamDisplayer, 4.7.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuElem3DPath" Namespace="VisuElem3DPath" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElem3DPath, 4.7.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuElemsDateTime" Namespace="VisuElemsDateTime" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemsDateTime, 4.9.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuElemXYChart" Namespace="VisuElemXYChart" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemXYChart, 4.10.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuInputs" Namespace="VisuInputs" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuInputs, 4.7.0.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <PlaceholderRedirections>
+                <PlaceholderRedirection Placeholder="Standard" Redirection="Standard, 3.5.22.0 (System)" />
+                <PlaceholderRedirection Placeholder="Standard64" Redirection="Standard64, 3.5.20.0 (System)" />
+                <PlaceholderRedirection Placeholder="StringUtils" Redirection="StringUtils, 3.5.22.0 (System)" />
+                <PlaceholderRedirection Placeholder="Util" Redirection="Util, 3.5.22.0 (System)" />
+                <PlaceholderRedirection Placeholder="Collections" Redirection="Collections, 3.5.17.0 (System)" />
+              </PlaceholderRedirections>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                  <ObjectId>3d9a06fc-194f-4505-9940-0a20f15e4b82</ObjectId>
+                </data>
+              </addData>
+            </Libraries>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/buildproperties" handleUnknown="implementation">
+            <BuildProperties>
+              <CompilerDefines>GENERATE_OVERLAY_VISU,VISU_USEPROPERTYINFO</CompilerDefines>
+            </BuildProperties>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>33d0ec08-7fc2-4d2a-9bd1-727edf9a91f4</ObjectId>
+          </data>
+        </addData>
+      </resource>
+    </data>
+    <data name="http://www.3s-software.com/plcopenxml/projectstructure" handleUnknown="discard">
+      <ProjectStructure>
+        <Object Name="Application" ObjectId="33d0ec08-7fc2-4d2a-9bd1-727edf9a91f4">
+          <Object Name="Administrador de bibliotecas" ObjectId="3d9a06fc-194f-4505-9940-0a20f15e4b82" />
+          <Object Name="PLC_PRG" ObjectId="4f8c4166-b5d4-49df-b173-585c17dd53ec" />
+          <Object Name="MainTask" ObjectId="c5f2d7fb-238a-42c8-aeba-d31789898cae" />
+          <Object Name="VISU_TASK" ObjectId="395d42de-28ed-4f21-a294-7fdcbe14fc2f" />
+          <Object Name="ST_CicloLavado" ObjectId="57270342-5a06-4a75-9878-91be4361cb3f" />
+          <Object Name="Escalar" ObjectId="45bd2cc3-1abf-476c-90ca-51f6225b8af7" />
+          <Object Name="FB_Tambor" ObjectId="8f71512c-c1c8-4828-b8e2-d69cd7368f5e" />
+        </Object>
+      </ProjectStructure>
+    </data>
+  </addData>
+</project>
